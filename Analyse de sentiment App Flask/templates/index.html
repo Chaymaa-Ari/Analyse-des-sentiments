@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      integrity="sha384-Zo-VQ9Jzz88g7gkMN3d0ScGCDfFvdD1g8zVsXmBwV0v3zXJbN2zYdoZDwbdMd3rD"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="static/css/styles.css" />
+    <title>Sentiment Analysis</title>
+    <style>
+      body {
+        background-image: url("/static/image/back1.jpeg");
+      }
+      body:before {
+        content: "";
+        background: rgba(0, 0, 0, 0.7);
+        position: absolute;
+        bottom: 0;
+        top: 0;
+        left: 0;
+        right: 0;
+      }
+      h1,
+      section {
+        position: relative;
+        z-index: 2;
+      }
+      h1 {
+        color: white;
+        text-align: center;
+        margin-top: 20px;
+      }
+      section {
+        background-color: f0ede4;
+        padding: 20px;
+        border-radius: 20px;
+        box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
+        width: 600px;
+        height: 500px;
+        margin-left: 480px;
+        margin-top: 60px;
+      }
+      section:before {
+        content: "";
+        background: rgba(240, 237, 228, 0.7);
+        position: absolute;
+        bottom: 0;
+        top: 0;
+        left: 0;
+        right: 0;
+        border-radius: 10px;
+      }
+      label {
+        font-size: 25px;
+        margin-left: 10px;
+        margin-top: 40px;
+        position: relative;
+        z-index: 2;
+      }
+      textarea {
+        margin-left: 10px;
+        margin-top: 34px;
+        width: 560px;
+        height: 80px;
+        border-color: #884506;
+        border-radius: 5px;
+        position: relative;
+        z-index: 2;
+        font-size: 20px;
+      }
+      .btn1 {
+        width: 120px;
+        height: 40px;
+        position: relative;
+        z-index: 2;
+        background-color: #884506;
+        margin-left: 245px;
+        margin-top: 30px;
+        border: none;
+        border-radius: 3px;
+        color: white;
+        font-weight: bold;
+      }
+      #result {
+        margin-left: 220px;
+        margin-top: 50px;
+        position: relative;
+        z-index: 2;
+        font-size: 21px;
+      }
+      .img-fluid {
+        margin-left: 30px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Sentiment Analysis</h1>
+    <section>
+      <form action="/predict" method="post" id="sentiment-form">
+        <label for="selected_text">Enter the comment:</label>
+        <br />
+        <textarea id="selected_text" name="selected_text" required></textarea>
+        <br />
+        <button type="submit" class="btn1">Predict</button>
+      </form>
+      <div id="result">
+        <p>
+          <strong id="sentiment-label">Sentiment: </strong
+          ><span id="sentiment"></span>
+        </p>
+        <p>
+          <strong id="confidence-label">Confidence: </strong
+          ><span id="confidence"></span>
+        </p>
+
+        <p>
+          <strong id="accuracy-label">Accuracy: </strong
+          ><span id="accuracy"></span>
+        </p>
+        <img
+          id="emoji"
+          src=""
+          alt="Emoji"
+          class="img-fluid"
+          width="100"
+          height="100"
+        />
+      </div>
+
+      <script>
+        const form = document.getElementById("sentiment-form");
+        form.addEventListener("submit", async (event) => {
+          event.preventDefault();
+          const formData = new FormData(form);
+          const response = await fetch("/predict", {
+            method: "POST",
+            body: formData,
+          });
+          const result = await response.json();
+          document.getElementById("sentiment").innerText = result.sentiment;
+          document.getElementById("accuracy").innerText =
+            (result.accuracy * 100).toFixed(2) + "%";
+          document.getElementById("confidence").innerText =
+            (result.confidence * 100).toFixed(2) + "%";
+          document.getElementById("emoji").src = result.emoji;
+        });
+      </script>
+    </section>
+  </body>
+</html>
